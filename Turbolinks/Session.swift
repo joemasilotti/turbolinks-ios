@@ -37,14 +37,10 @@ public class Session: NSObject {
     private var initialized = false
     private var refreshing = false
 
-    public init(webViewConfiguration: WKWebViewConfiguration) {
+    public init(webViewConfiguration: WKWebViewConfiguration = WKWebViewConfiguration()) {
         _webView = WebView(configuration: webViewConfiguration)
         super.init()
         _webView.delegate = self
-    }
-
-    public convenience override init() {
-        self.init(webViewConfiguration: WKWebViewConfiguration())
     }
    
     // MARK: Visiting
