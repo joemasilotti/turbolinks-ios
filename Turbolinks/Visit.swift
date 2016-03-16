@@ -139,7 +139,8 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
         webView.navigationDelegate = self
         webView.pageLoadDelegate = self
 
-        let request = NSURLRequest(URL: location)
+        let request = NSMutableURLRequest(URL: location)
+        request.setValue("40.676632,-72.473121", forHTTPHeaderField: "ll")
         navigation = webView.loadRequest(request)
 
         delegate?.visitDidStart(self)
