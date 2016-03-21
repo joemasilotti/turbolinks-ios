@@ -1,7 +1,7 @@
 import WebKit
 
 protocol WebViewDelegate: class {
-    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action)
+    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action, data: [String: AnyObject])
     func webViewDidInvalidatePage(webView: WebView)
     func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError)
 }
@@ -120,7 +120,7 @@ extension WebView: WKScriptMessageHandler {
         case .PageInvalidated:
             delegate?.webViewDidInvalidatePage(self)
         case .VisitProposed:
-            delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
+            delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!, data: message.data)
         case .VisitStarted:
             visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasCachedSnapshot: message.data["hasCachedSnapshot"] as! Bool)
         case .VisitRequestStarted:

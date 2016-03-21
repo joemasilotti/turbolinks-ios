@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 
 public protocol SessionDelegate: class {
-    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
+    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action, data: [String: AnyObject])
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
     func session(session: Session, openExternalURL URL: NSURL)
     func sessionDidLoadWebView(session: Session)
@@ -244,8 +244,8 @@ extension Session: VisitableDelegate {
 }
 
 extension Session: WebViewDelegate {
-    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
-        delegate?.session(self, didProposeVisitToURL: location, withAction: action)
+    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action, data: [String: AnyObject]) {
+        delegate?.session(self, didProposeVisitToURL: location, withAction: action, data: data)
     }
     
     func webViewDidInvalidatePage(webView: WebView) {

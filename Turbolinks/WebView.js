@@ -52,9 +52,17 @@
         },
 
         // Adapter interface
-       
-        visitProposedToLocationWithAction: function(location, action) {
-            this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
+
+        visitProposedToLocationWithAction: function(location, action, target) {
+            data = { location: location.absoluteURL, action: action }
+
+            if (target !== null) {
+                for (var attributeName in target.dataset) {
+                    data[attributeName] = target.dataset[attributeName]
+                }
+            }
+
+            this.postMessage("visitProposed", data)
         },
 
         visitStarted: function(visit) {
