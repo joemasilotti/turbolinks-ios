@@ -60,7 +60,7 @@ class ApplicationController: UINavigationController {
 }
 
 extension ApplicationController: SessionDelegate {
-    func session(_ session: Session, didProposeVisitToURL URL: Foundation.URL, withAction action: Action) {
+    func session(_ session: Session, didProposeVisitToURL URL: Foundation.URL, withAction action: Action, data: [String: AnyObject]) {
         if URL.path == "/numbers" {
             presentNumbersViewController()
         } else {
