@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 
 public protocol SessionDelegate: class {
-    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
+    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action, data: [String: AnyObject])
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
     func session(session: Session, openExternalURL URL: NSURL)
     func sessionDidLoadWebView(session: Session)
@@ -37,14 +37,10 @@ public class Session: NSObject {
     private var initialized = false
     private var refreshing = false
 
-    public init(webViewConfiguration: WKWebViewConfiguration) {
+    public init(webViewConfiguration: WKWebViewConfiguration = WKWebViewConfiguration()) {
         _webView = WebView(configuration: webViewConfiguration)
         super.init()
         _webView.delegate = self
-    }
-
-    public convenience override init() {
-        self.init(webViewConfiguration: WKWebViewConfiguration())
     }
    
     // MARK: Visiting
@@ -56,11 +52,11 @@ public class Session: NSObject {
         return topmostVisit?.visitable
     }
 
-    public func visit(visitable: Visitable) {
-        visitVisitable(visitable, action: .Advance)
+    public func visit(visitable: Visitable, initialRequestHeaders: [String: String] = [String: String]()) {
+        visitVisitable(visitable, action: .Advance, initialRequestHeaders: initialRequestHeaders)
     }
     
-    private func visitVisitable(visitable: Visitable, action: Action) {
+    private func visitVisitable(visitable: Visitable, action: Action, initialRequestHeaders: [String: String] = [String: String]()) {
         guard visitable.visitableURL != nil else { return }
 
         visitable.visitableDelegate = self
@@ -71,7 +67,8 @@ public class Session: NSObject {
             visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
             visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
         } else {
-            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
+            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView,
+                initialRequestHeaders: initialRequestHeaders)
         }
 
         currentVisit?.cancel()
@@ -247,8 +244,8 @@ extension Session: VisitableDelegate {
 }
 
 extension Session: WebViewDelegate {
-    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
-        delegate?.session(self, didProposeVisitToURL: location, withAction: action)
+    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action, data: [String: AnyObject]) {
+        delegate?.session(self, didProposeVisitToURL: location, withAction: action, data: data)
     }
     
     func webViewDidInvalidatePage(webView: WebView) {
