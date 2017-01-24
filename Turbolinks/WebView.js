@@ -53,10 +53,6 @@
 
         // Adapter interface
 
-<<<<<<< HEAD
-        visitProposedToLocationWithAction: function(location, action) {
-            this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
-=======
         visitProposedToLocationWithAction: function(location, action, target) {
             data = { location: location.absoluteURL, action: action }
 
@@ -67,7 +63,6 @@
             }
 
             this.postMessage("visitProposed", data)
->>>>>>> 08f0a56... Pass along clicked anchor tag's data attributes
         },
 
         visitStarted: function(visit) {
